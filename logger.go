@@ -22,9 +22,10 @@ type ILogger interface {
 
 type Logger struct {
 	core.LevelEnabler
-	development   bool
-	disableCaller bool
-	writer        core.Writer
+	development      bool
+	disableCaller    bool
+	callerSkipOffset int
+	writer           core.Writer
 }
 
 func (l *Logger) Sync() error {
@@ -32,8 +33,6 @@ func (l *Logger) Sync() error {
 }
 
 func (l *Logger) check(lvl core.Level, format string, v ...interface{}) *core.Entry {
-	const callerSkipOffset = 3
-
 	if lvl < core.FatalLevel && !l.Enabled(lvl) {
 		return nil
 	}
@@ -50,7 +49,7 @@ func (l *Logger) check(lvl core.Level, format string, v ...interface{}) *core.En
 	ent.Message = content
 
 	if !l.disableCaller {
-		if _, file, line, ok := runtime.Caller(callerSkipOffset); ok {
+		if _, file, line, ok := runtime.Caller(l.callerSkipOffset); ok {
 			ent.Caller = fmt.Sprintf("%s:%d", TrimmedPath(file), line)
 		}
 	}

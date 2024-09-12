@@ -54,6 +54,9 @@ func (cfg Config) Build(opts ...Option) (*Logger, error) {
 	for _, opt := range opts {
 		opt(l)
 	}
+	if l.callerSkipOffset == 0 {
+		l.callerSkipOffset = 3
+	}
 
 	return l, nil
 }

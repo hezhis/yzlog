@@ -15,3 +15,9 @@ func WithDisableCaller(flag bool) Option {
 		log.disableCaller = flag
 	}
 }
+
+func WithCallerSkipOffset(offset int) Option {
+	return func(log *Logger) {
+		log.callerSkipOffset = offset
+	}
+}
